@@ -1,0 +1,4 @@
+1. not smoothened
+2.(a) (b) (c is not ok)
+3.(a is not ok) (b)
+4.(a) (b is not ok) 
