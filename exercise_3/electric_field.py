@@ -45,17 +45,21 @@ if __name__=="__main__":
     plt.quiver(r[0], r[1], dEx, dEy)
     u_mesh, v_mesh = uv_electric_field(r_rod, r, eps0, Q, L)
     plt.quiver(r_rod[0], r_rod[1], u_mesh[1], v_mesh[0])
-    x = r[0]
-    y = r[1]
-    E = np.zeros(1,len(x))
-    for i in range(0, len(x)):
-        xy=meshgrid(x[i,:],y[:,i])
-        x = xy[0]
-        y = xy[1]
-        dx = float("{0:.2f}".format(x[i,1]-x[i,0]))
-        dy = float("{0:.2f}".format(y[1,i]-y[0,i]))
-        E[i]= simps(simps((x+y)/(4*np.pi*eps0)*Q/L/(x**2+y**2)**(3/2)
-    , dx = dx), dx = dy)
+    x = r[0,:,:]
+    y = r[1,:,:]
+    E = np.zeros((len(x),1))
+#    for i in range(0, len(x)):
+#        xy=meshgrid(x[i,:],y[:,i])
+#        x = xy[0]
+#        y = xy[1]
+#        dx = float("{0:.2f}".format(x[i,1]-x[i,0]))
+#        dy = float("{0:.2f}".format(y[1,i]-y[0,i]))
+#        E[i]= simps(simps((x+y)/(4*np.pi*eps0)*Q/L/(x**2+y**2)**(3/2)
+#    , dx = dx), dx = dy)
+    
+    for i in range(0,len(x)):
+        E[i] = sum(dEy[0:i,0])
+ 
     d = r[0,0,:];
     E_ana = fun_electric_field((L/2+d, 0), eps0, Q, L)
     
