@@ -1,0 +1,7 @@
+1. To calculate things numerically is the newest thing I learned from the course. From derivatives, interpolations to integerations, the many methods are based on approximation with segmented grids. 
+The software VESTA and FEnicCS are also new to me. The usage to edit and show crysal structure and solving equations are quite convenient. 
+The calculation of gradient is also new to me, its application in, for instances, electron density calculation is quite impressive.'
+2. I do think the subject will benefit my future endeavors. Because I chose my PhD field in neuroscience more related to dynamic modeling and computation. To think, model and solve problem computationally is really practiced thorugh this course.
+And to program in python is also one of the main stream platform in my major, data engineering and machine learning.
+3. The exercise later related to more physics is getting hard to me, but with the discussion with my classmate, I do feel I can still handle with it and I do not plan to give it up. Grade: 3
+ 
