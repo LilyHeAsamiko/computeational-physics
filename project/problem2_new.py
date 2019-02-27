@@ -92,6 +92,6 @@ if __name__=="__main__":
     ax1.plot_wireframe(B[1], B[2], B[3])
     ax2 = fig2.add_subplot(212, projection='3d')
     ax2.contour(B[1], B[2], B[3])    
-    plt.savefig('B_3D.pdf',dpi=200)
+    plt.savefig('B_yz_3D.pdf',dpi=200)
     plt.show()
             
