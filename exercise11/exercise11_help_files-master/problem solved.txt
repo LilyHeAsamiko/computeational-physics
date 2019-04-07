@@ -1,0 +1,2 @@
+Default setting: tamperature :3; grid size:10; dimention: 2;boundary condition: 20(equilibration time);  exchange constant: 4( J given in k_beta for pairs)
+Problem done:1,2,3
