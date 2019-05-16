@@ -2,7 +2,7 @@
 """
 Created on Fri May  3 17:39:08 2019
 
-@author: user
+@author: LilyHeAsamiko
 """
 
 from numpy import *
@@ -125,6 +125,11 @@ def main():
     dim = 2
 #    grid_side = 10
     grid_sides = [4,8,16,32] 
+    Cv = zeros((4,1))
+    E_tot = zeros((4,1))
+    Mag = zeros((4,1))
+    Chi = zeros((4,1))
+    M = zeros((4,1))
     for k in range(0,4):
         grid_side = grid_sides[k]
         grid_size = grid_side**dim
@@ -157,77 +162,119 @@ def main():
                                       dim=dim,
                                       coords = [i,j]))
         
-        Nblocks = 200
-        Niters = 2000
+        Nblocks = 100
+        Niters = 1000
         #tamperature from 0.5 to 6
-        T = np.linspace(0.5,6,20)
+#        T = np.linspace(0.5,8,60)
         Edata = []
         Edata2 = []
         Mdata = []
         Mdata2 = []
-        beta = zeros((len(T),1))
+
+#        beta = zeros((len(T),1))
         eq = 20
-        for i in range(len(T)):
-            beta[i] = 1.0/T[i]
-            Walkers, Eb, Eb2, mb, mb2, Acc = ising(Nblocks,Niters,Walkers,beta[i])
+#        for i in range(len(T)):
+        T = 2.27 
+        beta = 1.0/T
+        
+        Walkers, Eb, Eb2, mb, mb2, Acc = ising(Nblocks,Niters,Walkers,beta)
             
-            E_and_err = array([mean(Eb[eq:]), std(Eb[eq:])/sqrt(len(Eb[eq:]))])
-            E2_and_err = array([mean(Eb2[eq:]), std(Eb2[eq:])/sqrt(len(Eb2[eq:]))])
-            Edata.append(E_and_err)
-            Edata2.append(E2_and_err)
-            M_and_err = array([mean(mb[eq:]), std(mb[eq:])/sqrt(len(mb[eq:]))])
-            M2_and_err = array([mean(mb2[eq:]), std(mb2[eq:])/sqrt(len(mb2[eq:]))])
-            Mdata.append(M_and_err)
-            Mdata2.append(M2_and_err)
+        E_and_err = array([mean(Eb[eq:]), std(Eb[eq:])/sqrt(len(Eb[eq:]))])
+        E2_and_err = array([mean(Eb2[eq:]), std(Eb2[eq:])/sqrt(len(Eb2[eq:]))])
+        Edata.append(E_and_err)
+        Edata2.append(E2_and_err)
+        M_and_err = array([mean(mb[eq:]), std(mb[eq:])/sqrt(len(mb[eq:]))])
+        M2_and_err = array([mean(mb2[eq:]), std(mb2[eq:])/sqrt(len(mb2[eq:]))])
+        Mdata.append(M_and_err)
+        Mdata2.append(M2_and_err)
         
         Edata=array(Edata)
         Edata2=array(Edata2)
         Mdata=array(Mdata)
         Mdata2=array(Mdata2)
-        # results plot(observables: ENERGY, HEAT CAPACITY, MAGNETIZATION, SUSCEPTIBILITY)
-        figure()
-        Cv = (Edata2[:,0]-Edata[:,0]**2)/T**2/grid_size
-        plot(T,Cv,'-o')
-        plot([2.27, 2.27],[0.0, 1.03*amax(Cv)],'k--')
-        ylabel('Heat Capacity per spin2 with grid_size %s' % str(grid_side))
-        xlabel('Temperature')
-        savefig('Heat Capacity per spin_J_4_J_2 with grid_size%s.pdf'% str(grid_side), mpi = 200)
-        # Notice: T_c_exact = 2.27
 
-        figure()
-        errorbar(T,Edata[:,0]/grid_size,Edata[:,1]/grid_size)
-        ylabel('Energy per spin2 with grid_size %s' % str(grid_side))
-        xlabel('Temperature')
-        savefig('Energy per spin_J_4_J_2 with grid_size%s.pdf' % str(grid_side), mpi = 200)
-        for i in range(len(T)):
-            figure()
-            Cv = (Edata2[:,0]-Edata[:,0]**2)/T**2/grid_size
-            plot(T,Cv,'-o')
-            plot([2.27, 2.27],[0.0, 1.03*amax(Cv)],'k--')
-            ylabel('Heat Capacity per spin2 with grid_size %s' % str(grid_side))
-            xlabel('Temperature')
-            savefig('Heat Capacity per spin_J_4_J_2 with grid_size%s.pdf'% str(grid_side), mpi = 200)
-        
-        figure()
-        errorbar(T,Mdata[:,0]/grid_size,Mdata[:,1]/grid_size)
-        ylabel('Magnetization per spin2 with grid_size %s' % str(grid_side))
-        xlabel('Temperature')
-        savefig('Magnetization per spin_J_4_J_2 with grid_size%s.pdf'% str(grid_side), mpi = 200)
-        figure()
+        # results plot(observables: ENERGY, HEAT CAPACITY, MAGNETIZATION, SUSCEPTIBILITY)        
+        cv = (Edata2[:,0]-Edata[:,0]**2)/T**2/grid_size
+        e_tot = Edata[:,0]/grid_size
+        mag = Mdata[:,0]/grid_size
         chi = (Mdata2[:,0]-Mdata[:,0]**2)/T**2/grid_size
-        plot(T,chi,'-o')
-        plot([2.27, 2.27],[0.0, 1.03*amax(chi)],'k--')
-        ylabel('Susceptibility per spin2 with grid_size %s' % str(grid_side))
-        xlabel('Temperature')
-        savefig('Susceptibility per spin_J_4_J_2 with grid_size%s.pdf'% str(grid_side), mpi = 200) 
-        show()
+        m = len(Walkers) 
+    
+        print('Cv:',cv)
+        print('E_tot:',e_tot)
+        print('Mag:',mag)
+        print('chi:',chi)
+        print('M:',m)
+        Cv[k] = cv  
+        E_tot[k] = e_tot
+        Mag[k] = mag
+        Chi[k] = chi
+        M[k] = m
+        # results plot(observables: ENERGY, HEAT CAPACITY, MAGNETIZATION, SUSCEPTIBILITY)
+        #   figure()   
+        #    Cv = (Edata2[:,0]-Edata[:,0]**2)/T**2/grid_size
+        #    plot(T,Cv,'-o')
+        #    plot([2.27, 2.27],[0.0, 1.03*amax(Cv)],'k--')
+        #    ylabel('Heat Capacity with grid_size: %s' %(grid_size))
+        #    xlabel('Temperature')
+        #    savefig('Heat Capacity with Temperature second(grid_size_10).pdf', mpi = 200)
+        #    # Notice: T_c_exact = 2.27
+        #
+        #    figure()
+        #    errorbar(T,Edata[:,0]/grid_size,Edata[:,1]/grid_size)
+        #    ylabel('Energy with Temperature second(grid_size_10)')
+        #    xlabel('Temperature')
+        #    savefig('Energy with Temperature second(grid_size_10).pdf', mpi = 200)
+        #        
+        #    figure()
+        #    errorbar(T,Mdata[:,0]/grid_size,Mdata[:,1]/grid_size)
+        #    ylabel('Magnetization with Temperature second(grid_size_10)')
+        #    xlabel('Temperature')
+        #    savefig('Magnetization with Temperature second(grid_size_10).pdf', mpi = 200)
+        #    figure()
+        #    chi = (Mdata2[:,0]-Mdata[:,0]**2)/T**2/grid_size
+        #    plot(T,chi,'-o')
+        #    plot([2.27, 2.27],[0.0, 1.03*amax(chi)],'k--')
+        #    ylabel('Susceptibility with Temperature second(grid_size_10)')
+        #    xlabel('Temperature')
+        #    savefig('Susceptibility with Temperature second(grid_size_10).pdf', mpi = 200) 
+    
+    figure()
+    plot(grid_sides,Cv,'-o')
+    ylabel('Heat Capacity with grid_size')
+    xlabel('grid size')
+    savefig('Heat Capacity with grid_size.pdf', mpi = 200)
+            # Notice: T_c_exact = 2.27
         
-        #calculate transition tamperature
-        Tc = 1.0/(3.16681*10**(-6)*beta)
-        print('The transition tamperature with grid_size %s' % str(grid_side), mean(Tc))
-        plot(Tc)
-        savefig('The transition tamperature with grid_size%s.pdf'% str(grid_side), mpi = 200)
+    figure()
+    plot(grid_sides,E_tot,'-o')
+    ylabel('Energy with grid_size')
+    xlabel('grid size')
+    savefig('Temperature with grid_size.pdf', mpi = 200)
+                
+    figure()
+    plot(grid_sides,Mag,'-o')
+    ylabel('Magnetization with grid_size')
+    xlabel('grid size')    
+#    savefig('Magnetization with grid_size.pdf', mpi = 200)            figure()
+    savefig('Magnetization with grid_size.pdf', mpi = 200) 
+                
+    figure()
+    plot(grid_sides,Chi,'-o')
+    ylabel('Susceptibility with grid_size')
+    xlabel('grid size')
+    savefig('Susceptibility with grid_size.pdf', mpi = 200)          
+    
+    #calculate transition tamperature
 
+    figure()
+    Tc = 1.0/(3.16681*10**(-6)*M)
+#    print('The transition tamperature with grid_size: %s' %(grid_size))
+    plot(grid_sides,Tc,'-o')
+    ylabel('The transition tamperature with grid_size' )
+    xlabel('grid size')
+    savefig('The transition tamperature.pdf', mpi = 200)
+    show()
         
 """""""""""""""""""""""
 For spin models, we have a finite d-dimensional lattice of  sites.

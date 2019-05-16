@@ -11,9 +11,7 @@ import numpy.linalg as LA
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import simps
 
-# the segmentation of electric circuit
-#r_hat is the unit 
-
+# set O
 class loop:
     def __init__(self,*args,**kwargs):
         self.O = kwargs['O']
